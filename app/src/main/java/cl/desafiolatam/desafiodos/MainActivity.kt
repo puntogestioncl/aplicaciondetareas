@@ -58,14 +58,9 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             val dataList = createEntityListFromDatabase(lista)
             Log.d("Datos", "$dataList")
 
-
-                adapter.updateData(dataList)
-
-
+            // Cargamos el Adapter, pasando lo que nos solicita
+            list.adapter = TaskListAdapter(dataList, this, this)
         }
-
-
-
     }
 
     override fun onResume() {
