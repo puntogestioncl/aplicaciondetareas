@@ -51,22 +51,12 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         setUpViews()
         //inicializar lo necesario para usar la base de datos
         instanceDB = TaskDatabase.getInstace(application).taskDao()
-
-        AsyncTask.execute{
-            val lista = instanceDB.getAllTask()
-            Log.d("Datos", "$lista")
-            val dataList = createEntityListFromDatabase(lista)
-            Log.d("Datos", "$dataList")
-
-            // Cargamos el Adapter, pasando lo que nos solicita
-            list.adapter = TaskListAdapter(dataList, this, this)
-        }
     }
 
     override fun onResume() {
         super.onResume()
         AsyncTask.execute {
-            val newItems = mutableListOf<TaskUIDataHolder>()
+            val newItems = createEntityListFromDatabase(instanceDB.getAllTask())
             runOnUiThread {
                 adapter.updateData(newItems)
             }
