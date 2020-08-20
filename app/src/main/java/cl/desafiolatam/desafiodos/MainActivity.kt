@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,23 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             .setPositiveButton("Editar") {
                     _: DialogInterface, _: Int ->
                 //generar código para editar/actualizar la tarea
+                if (taskText.text?.isNotEmpty()!!) {
+                    AsyncTask.execute{
+                        // el metodo update que agregue al TaskDao
+                        // que recibe el id y el texto a modificar
+                        instanceDB.updateTaskByID(taskItem.id.toInt() , taskText.text.toString())
+                        // despues hacemos el mismo proceso que antes de pasar la lista y que nos retorne un TaskUIDataHolder
+                        // que pasamos al metodo updateData del adapter, como en las demas funsiones en que trabajamos con la BD
+                        val newItems = createEntityListFromDatabase(instanceDB.getAllTask())
+                        runOnUiThread{
+                            adapter.updateData(newItems)
+
+                        }
+                    }
+                    // Esto era para ver los id del taskItem que es un TaskUIDataHolder,
+                    // que se pasan en el onBindViewHolder del adapter y se le agrego un Listener para saber cuando se hace click sobre el
+                    //Toast.makeText(this, taskItem.id.toString(), Toast.LENGTH_LONG).show()
+                }
             }
         dialogBuilder.create().show()
     }
@@ -57,6 +75,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         super.onResume()
         AsyncTask.execute {
             val newItems = createEntityListFromDatabase(instanceDB.getAllTask())
+            Log.d("Datos", "$newItems")
             runOnUiThread {
                 adapter.updateData(newItems)
             }
