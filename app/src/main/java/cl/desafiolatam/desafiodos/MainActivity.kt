@@ -147,6 +147,11 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
                 AsyncTask.execute{
                     //var lista = instanceDB.getAllTask()
                     instanceDB.deleteAllTask2()
+                    var lista = instanceDB.getAllTask()
+                    var dataList = createEntityListFromDatabase(lista)
+                    runOnUiThread{
+                        adapter.updateData(dataList)
+                    }
                 }
             }
         dialog.show()
